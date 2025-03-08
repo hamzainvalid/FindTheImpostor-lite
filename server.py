@@ -63,4 +63,4 @@ def answer_submitted(data):
 
 
 if __name__ == "__main__":
-    sio.run(app, host="0.0.0.0", port=10000)
+    sio.run(app, host="0.0.0.0", port=10000, allow_unsafe_werkzeug=True)
