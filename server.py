@@ -14,13 +14,14 @@ questions = [
     'What is your age?'
 ]
 
+'''
 url = 'https://fti.free.nf/fetch.php'
 
 
 response = urllib.request.urlopen(url)
 data1 = response.read().decode()  # Decode the byte response to string
 print(data1)  # Print the content of the response
-
+'''
 
 
 players = []
