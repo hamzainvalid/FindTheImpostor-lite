@@ -39,8 +39,12 @@ def display_answer(data):
     print('answer to be displayed')
     status_label.config(text='All players have submitted their answers as below')
     reveal_answer_label.config(text=f'{user_answer_dict}')
+    sio.emit('question_reveal', {'question': 'pass'})
 
-
+@sio.on('q_reveal')
+def q_reveal(data):
+    reveal = data.get('question')
+    question_label.config(text=f'the question was{reveal}')
 
 @sio.on('join_game')
 def game_ui(data):

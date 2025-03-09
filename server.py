@@ -1,4 +1,5 @@
 from flask import Flask, request
+import requests
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import random
 
@@ -12,6 +13,30 @@ questions = [
     'What is your name?',
     'What is your age?'
 ]
+
+# URL of the PHP API
+'''url = 'https://fti.free.nf/fetch.php'
+
+# Send a GET request to the PHP API
+response = requests.get(url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON response
+    data1 = response.json()
+
+    # Extract the data as a string
+    result_string = ""
+    for item in data1:
+        result_string += item['data'] + "\n"
+
+    # Print the data as a string
+    print("Fetched Data:\n")
+    print(result_string)
+
+else:
+    print(f"Error: Unable to fetch data (Status code: {response.status_code})")
+'''
 
 players = []
 answers = []
@@ -31,6 +56,8 @@ def join_game(data):
 
 @sio.on("start_game")
 def start_game(data):
+    global question
+    global impostor_question
     users = data.get('start')
     players.append(users)
     impostor = random.choice(users)
@@ -61,6 +88,11 @@ def answer_submitted(data):
     if len(players) == len(answers):
         sio.emit('display_answer', {'reveal': player_answer_dict})
 
+
+@sio.on('question_reveal')
+def question_reveal(data):
+    x = data.get('quesiton')
+    sio.emit('q_reveal', {'question': question})
 
 if __name__ == "__main__":
     sio.run(app, host="0.0.0.0", port=10000, allow_unsafe_werkzeug=True)
