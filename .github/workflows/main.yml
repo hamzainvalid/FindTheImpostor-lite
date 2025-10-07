@@ -17,17 +17,28 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install LocalTunnel
+        run: npm install -g localtunnel
+
       - name: Run Flask server with LocalTunnel
-        run:
-            python server.py &
-            sleep 5
-            
-            
-            lt --port 10000 --print-requests &
-            sleep 5
-            
-            echo "✅ Server and tunnel are running."
-            echo "🌐 View your public URL above in the logs."
-            
-            # Keep the runner alive indefinitely (or until you cancel it)
-            tail -f /dev/null
+        run: |
+          echo "🚀 Starting Flask-SocketIO server..."
+          nohup python server.py > server.log 2>&1 &
+          
+          echo "🌐 Starting LocalTunnel..."
+          nohup lt --port 10000 --print-requests > lt_output.log 2>&1 &
+          
+          echo "🕓 Waiting for tunnel to start..."
+          sleep 10
+          
+          echo "🔍 Extracting public URL..."
+          grep -o 'https://[0-9a-zA-Z.-]*\.loca.lt' lt_output.log | head -n 1 > public_url.txt || true
+          
+          if [ -s public_url.txt ]; then
+            echo "✅ Public URL: $(cat public_url.txt)"
+          else
+            echo "⚠️ Could not detect LocalTunnel URL — check lt_output.log"
+          fi
+          
+          echo "✅ Server and tunnel are running. Keeping job alive..."
+          tail -f /dev/null
