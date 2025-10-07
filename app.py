@@ -5,7 +5,7 @@ import threading
 import time
 import random
 
-SERVER_URL = "https://findtheimpostor-lite.onrender.com"  # Replace with your server URL
+SERVER_URL = "http://127.0.0.1:10000"  # Replace with your server URL
 sio = socketio.Client()
 
 # Connect to the server before emitting any event
