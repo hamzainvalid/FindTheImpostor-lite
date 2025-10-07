@@ -17,17 +17,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Install LocalTunnel
-        run: npm install -g localtunnel
-
-      - name: Run server with LocalTunnel
-        run: |
-          python server.py &
-          sleep 5
-          lt --port 10000 --print-requests > lt_url.txt &
-          sleep 5
-          grep -o 'https://[0-9a-z]*\.loca.lt' lt_url.txt > public_url.txt
-          echo "Public URL: $(cat public_url.txt)"
-
-      - name: run server
-        run: python server.py
+      - name: Run Flask server with LocalTunnel
+        run:
+            python server.py &
+            sleep 5
+            
+            
+            lt --port 10000 --print-requests &
+            sleep 5
+            
+            echo "✅ Server and tunnel are running."
+            echo "🌐 View your public URL above in the logs."
+            
+            # Keep the runner alive indefinitely (or until you cancel it)
+            tail -f /dev/null
